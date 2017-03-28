@@ -22,3 +22,8 @@ names = np.array(['bob', 'joe', 'will', 'bob', 'will', 'joe', 'joe'])
 data = np.random.randn(7, 4)
 data[names == 'bob']
 arr = np.arange(32).reshape(4, 8).reshape(8, 4)
+x = np.array([1.1, 1.2, 1.3, 1.4, 1.5])
+y = np.array([2.1, 2.2, 2.3, 2.4, 2.5])
+con = np.array([True, False, True, False, True])
+result1 = [(x1 if c else y1) for x1, y1, c in zip(x, y, con)]
+result2 = np.where(con, x, y)
