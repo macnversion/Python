@@ -38,3 +38,5 @@ frame.apply(f)
 frame.apply(f, axis=1)
 frame.sort_index()
 frame.sort_index(axis=1)
+# 根据多列的名称进行排序
+frame.sort_index(by=['Ohio', 'Texas'])
