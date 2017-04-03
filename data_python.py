@@ -3,7 +3,7 @@
 import numpy as np
 from numpy import random
 import pandas as pd
-
+from pandas import DataFrame, Series
 
 
 # %%
@@ -40,3 +40,48 @@ frame.sort_index()
 frame.sort_index(axis=1)
 # 根据多列的名称进行排序
 frame.sort_index(by=['Ohio', 'Texas'])
+frame2 = frame.set_index(['Ohio', 'Texas'], drop=False)
+
+# 数据的合并
+df1 = DataFrame({'lkey':['b', 'b', 'a', 'c', 'a', 'a', 'b'],
+                 'data1':range(7)})
+df2 = DataFrame({'rkey':['a', 'b', 'd'],
+                 'data2':range(3)})
+pd.merge(df1, df2, left_on='lkey', right_on='rkey', how='right')
+
+left = DataFrame({'key1':['foo', 'foo', 'bar'],
+                  'key2':['one', 'two', 'one'],
+                  'lval':[1,2,3]})
+right = DataFrame({'key1':['foo', 'foo', 'bar', 'bar'],
+                   'key2':['one', 'two', 'one', 'two'],
+                   'rval':[4,5,6,7]})
+left1 = DataFrame({'key':['a', 'b', 'a', 'a', 'b', 'c'],
+                   'value':range(6)})
+right1 = DataFrame({'group_val':[3.5, 7]},
+                    index=['a', 'b'])
+pd.merge(left, right, on=['key1', 'key2'], how='outer')
+pd.merge(left, right, on='key1', suffixes=('_left', '_right'))
+pd.merge(left1, right1, left_on='key', right_index=True,
+         how='outer')
+
+
+s1 = pd.Series([0, 1], index=['a', 'b'])
+s2 = pd.Series([2, 3, 4], index=['c', 'd', 'e'])
+s3 = pd.Series([5, 6], index=['f', 'g'])
+s4 = pd.concat([s1*5, s3])
+pd.concat([s1, s2, s3])
+pd.concat([s1, s2, s3], axis=1)
+pd.concat([s1, s4], axis=1, join='inner')
+result1 = pd.concat([s1, s1, s3], keys=['one', 'two', 'three'])
+result2 = pd.concat([s1, s1, s3], axis=1,
+                    keys=['one', 'two', 'three'])
+
+data = DataFrame(np.arange(6).reshape(2,3),
+                 index=pd.Index(['ohio', 'colorado'], name='state'),
+                 columns=pd.Index(['one', 'two', 'three'],
+                                  name='number'))
+# 离散化和面元划分
+ages = [15, 17, 23, 25, 29, 31, 33, 28, 34, 40, 50]
+bins = [18, 25, 35, 40, 100]
+cats = pd.cut(ages, bins)
+cats.codes
