@@ -9,3 +9,7 @@ file_path = 'D:\WorkSpace\CodeSpace\data\Python_practice'
 catering_scale = file_path + '\chapter3\demo\data\catering_sale.xls'
 data = pd.read_excel(catering_scale, index_col=u'日期')
 print data.describe()
+
+plt.figure()
+p = data.boxplot()
+plt.show()
