@@ -5,7 +5,33 @@ from numpy import random
 import pandas as pd
 from pandas import DataFrame, Series
 from datetime import datetime
+import json
+from collections import defaultdict
+from collections import Counter
 
+
+# %% function
+def get_counts(sequence):
+    counts = {}
+    for x in sequence:
+        if x in counts:
+            counts[x]+=1
+        else:
+            counts[x]=1
+    return counts
+
+
+def get_counts2(sequence):
+    counts = defaultdict(int)
+    for x in sequence:
+        counts[x] += 1
+    return counts
+
+
+def top_counts(count_dict, n=10):
+    value_key_pairs = [(count, tz) for tz, count in count_dict.items()]
+    value_key_pairs.sort()
+    return value_key_pairs[-n:]
 
 # %%
 data1 = [6, 7.5, 8, 0, 1]
@@ -86,3 +112,75 @@ ages = [15, 17, 23, 25, 29, 31, 33, 28, 34, 40, 50]
 bins = [18, 25, 35, 40, 100]
 cats = pd.cut(ages, bins)
 cats.codes
+
+# %% usagov数据
+data_path = 'D:\WorkSpace\CodeSpace\data\python_for_data_analysis'
+path = data_path + '\ch02\usagov_bitly_data2012-03-16-1331923249.txt'
+open(path).readline()
+
+records = [json.loads(line) for line in open(path)]
+
+time_zones = [rec['tz'] for rec in records if 'tz' in rec]
+top_counts(get_counts(time_zones))
+counts = Counter(time_zones)
+counts.most_common(10)
+
+frame = DataFrame(records)
+tz_counts = frame['tz'].value_counts()
+clean_tz = frame['tz'].fillna('Missing')
+clean_tz[clean_tz == '']='Unknown'
+tz_counts = clean_tz.value_counts()
+tz_counts[:10].plot(kind='barh', rot=20)
+
+results = Series([xx.split()[0] for xx in frame.a.dropna()])
+results.value_counts()[:10]
+cframe = frame[frame.a.notnull()]
+operating_system = np.where(cframe['a'].str.contains('Windows'),
+                            'windodws', 'Not Windows')
+by_tz_os = cframe.groupby(['tz', operating_system])
+agg_counts = by_tz_os.size().unstack().fillna(0)
+indexer = agg_counts.sum(1).argsort()
+count_subset = agg_counts.take(indexer)[-10:]
+
+# %% movielens 1M数据集
+data_path = 'D:\WorkSpace\CodeSpace\data\python_for_data_analysis'
+unames = ['user_id', 'gender', 'age', 'occupation', 'zip']
+rnames = ['user_id', 'movie_id', 'rating', 'timestamp']
+mnames = ['movie_id', 'title', 'genres']
+users = pd.read_table(data_path+'\ch02\movielens\users.dat',
+                      sep='::', header=None, names=unames,
+                      engine='python')
+ratings = pd.read_table(data_path+'\ch02\movielens\\ratings.dat',
+                        sep='::', header=None, names=rnames,
+                        engine='python')
+movies = pd.read_table(data_path+'\ch02\movielens\movies.dat',
+                       sep='::', header=None, names=mnames,
+                       engine='python')
+data = pd.merge(pd.merge(ratings, users), movies)
+# %%
+mean_rating = data.pivot_table('rating', index='title', columns='gender',
+                             aggfunc='mean')
+rating_by_title = data.groupby('title').size()
+active_titles = rating_by_title.index[rating_by_title>250]
+mean_rating = mean_rating.ix[active_titles]
+top_female_movies = mean_rating.sort_values(by='F', ascending=False)
+mean_rating['diff'] = mean_rating['F'] - mean_rating['M']
+sort_by_diff = mean_rating.sort_values(by='diff', ascending=False)
+rating_std_by_title = data.groupby('title')['rating'].std()
+
+# %% 美国出生的婴儿的姓名
+data_path = 'D:\WorkSpace\CodeSpace\data\python_for_data_analysis'
+names1880 = pd.read_csv(data_path+'\ch02\\names\yob1880.txt',
+                        names=['name', 'sex', 'births'])
+names1880.groupby('sex').births.sum()
+years = range(1880, 2011)
+pieces = []
+columns = ['name', 'sex', 'births']
+for year in  years:
+    path = data_path + ('\ch02\\names\yob%d.txt' % year)
+    frame = pd.read_csv(path, names=columns)
+    frame['year'] = year
+    pieces.append(frame)
+names = pd.concat(pieces, ignore_index = True)
+# %%
+total_births = names.pivot_table('births', index='year', columns='sex')
