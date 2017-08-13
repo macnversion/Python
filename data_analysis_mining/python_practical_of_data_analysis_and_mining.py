@@ -10,6 +10,7 @@ from pandas import DataFrame, Series
 import matplotlib.pyplot as plt
 from scipy.interpolate import lagrange
 from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
 from sklearn import datasets
 # %%
 data_path = r'/Users/machuan/CodeSpace/Code.Data/python/'
@@ -112,3 +113,19 @@ def cluster_plot(d, k):
 cluster_plot(d1, k).show()
 cluster_plot(d2, k).show()
 cluster_plot(d3, k).show()
+
+# 主成分分析
+principal_component = pd.read_excel(file_path + 'principal_component.xls',
+                                    header=None)
+pca = PCA()
+pca.fit(principal_component)
+pca.components_
+pca.explained_variance_ratio_
+
+pca = PCA(3)
+pca.fit(principal_component)
+low_d = pca.transform(principal_component)
+
+
+# %% 挖掘建模
+file_path = data_path + r'Python数据分析与挖掘实战/chapter5/demo/data/'
