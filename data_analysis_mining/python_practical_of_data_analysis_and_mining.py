@@ -2,13 +2,15 @@
 #  python数据分析与挖掘实战
 
 # %%
-from sklearn import datasets
+import os
+import platform
 import numpy as np
 import pandas as pd
 from pandas import DataFrame, Series
-import platform
 import matplotlib.pyplot as plt
 from scipy.interpolate import lagrange
+from sklearn.cluster import KMeans
+from sklearn import datasets
 # %%
 data_path = r'/Users/machuan/CodeSpace/Code.Data/python/'
 
@@ -73,8 +75,40 @@ def ployinterp_columns(s, n, k=5):
 for i in catering_sale.columns:
     for j in range(len(data)):
         if (data[i].isnull())[j]:
-            data[i][j] = ployinterp_columns(data[i], j)
+            data[i][j] = ployinterp_columns(data[i], j)  # fix me
 
 # 连续属性离散化
+# 数据规范化
 discretization_data = pd.read_excel(file_path + 'discretization_data.xls')
-data = discretization_data.[u'肝气郁结证型系数'].copy()
+data = discretization_data[u'肝气郁结证型系数'].copy()
+k = 4
+d1 = pd.cut(data, k, labels=range(k))
+
+# 等频率离散化
+w = [1.0*i/k for i in range(k+1)]
+w = data.describe(percentiles=w)[4:4+k+1]
+w[0] = w[0]*(1-1e-10)
+d2 = pd.cut(data, w, labels=range(k))
+
+kmodel = KMeans(n_clusters=k, n_jobs=4)
+kmodel.fit(data.reshape(len(data), 1))
+c = DataFrame(kmodel.cluster_centers_).sort(0)
+w = pd.rolling_mean(c, 2).iloc[1:]
+w = [0] + list(w[0]) + [data.max()]
+d3 = pd.cut(data, w, labels=range(k))
+
+
+def cluster_plot(d, k):
+    import matplotlib.pyplot as plt
+    plt.rcParams['font.sans-serif'] = ['SimHei']
+    plt.rcParams['axes.unicode_minus'] = False
+
+    for j in range(0, k):
+        plt.plot(data[d==j], [j for i in d[d==j]], 'o')
+
+    plt.ylim(-0.5, k-0.5)
+    return plt
+
+cluster_plot(d1, k).show()
+cluster_plot(d2, k).show()
+cluster_plot(d3, k).show()
