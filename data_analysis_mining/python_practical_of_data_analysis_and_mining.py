@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import lagrange
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
+from sklearn.linear_model import LogisticRegression as LR
+from sklearn.linear_model import RandomizedLogisticRegression as RLR
 from sklearn import datasets
 # %%
 data_path = r'/Users/machuan/CodeSpace/Code.Data/python/'
@@ -129,3 +131,12 @@ low_d = pca.transform(principal_component)
 
 # %% 挖掘建模
 file_path = data_path + r'Python数据分析与挖掘实战/chapter5/demo/data/'
+
+# 逻辑回归
+bankloan = pd.read_excel(file_path + 'bankloan.xls')
+x = bankloan.iloc[:, :8].as_matrix()
+y = bankloan.iloc[:, 8].as_matrix()
+
+rlr = RLR()
+rlr.fit(x, y)
+rlr.get_support()
