@@ -15,7 +15,10 @@ from sklearn.linear_model import LogisticRegression as LR
 from sklearn.linear_model import RandomizedLogisticRegression as RLR
 from sklearn import datasets
 # %%
-data_path = r'/Users/machuan/CodeSpace/Code.Data/python/'
+if 'Windows' in platform.platform():
+    data_path = r'D:/WorkSpace/CodeSpace/Code.Data/Python/'
+else:
+    data_path = r'/Users/machuan/CodeSpace/Code.Data/python/'
 
 # %% 数据探索- chapter03
 file_path = data_path + r'Python数据分析与挖掘实战/chapter3/demo/data/'
