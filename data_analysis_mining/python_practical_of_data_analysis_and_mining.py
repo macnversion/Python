@@ -66,8 +66,8 @@ file_path = data_path + r'Python数据分析与挖掘实战/chapter4/demo/data/'
 # 拉格朗日插值
 catering_sale = pd.read_excel(file_path + 'catering_sale.xls',
                               index_col=u'日期')
-catering_sale[u'销量'][(catering_sale[u'销量']<400)|
-                     (catering_sale[u'销量']>5000)] = None
+catering_sale[u'销量'][(catering_sale[u'销量'] < 400)|
+                     (catering_sale[u'销量'] > 5000)] = None
 
 
 # 自定义插值函数
@@ -143,3 +143,14 @@ y = bankloan.iloc[:, 8].as_matrix()
 rlr = RLR()
 rlr.fit(x, y)
 rlr.get_support()
+print u'通过随机逻辑回归模型筛选特征结束'
+print u'有效特征为：%s' % ','.join(bankloan.columns[rlr.get_support()])
+x = bankloan[bankloan.columns[rlr.get_support()]].as_matrix()
+
+lr = LR()  # 建立逻辑回归模型
+lr.fit(x, y)  # 用筛选后的特征数据来训练模型
+print u'逻辑回归训练结束'
+print u'模型的平均正确率为：%s' % lr.score(x, y)  # 给出模型的平均正确率
+
+# %% 决策树
+
