@@ -13,8 +13,12 @@ from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression as LR
 from sklearn.linear_model import RandomizedLogisticRegression as RLR
+from sklearn.tree import DecisionTreeClassifier as DTC
+from sklearn.tree import export_graphviz
+from sklearn.externals.six import StringIO
 from sklearn import datasets
-# %%
+
+# %% 设定数据路径
 if 'Windows' in platform.platform():
     data_path = r'D:/WorkSpace/CodeSpace/Code.Data/Python/'
 else:
@@ -153,4 +157,17 @@ print u'逻辑回归训练结束'
 print u'模型的平均正确率为：%s' % lr.score(x, y)  # 给出模型的平均正确率
 
 # %% 决策树
+sales_data = pd.read_excel(file_path + 'sales_data.xls', index_col=u'序号')
+sales_data[sales_data == u'好'] = 1
+sales_data[sales_data == u'是'] = 1
+sales_data[sales_data == u'高'] = 1
+sales_data[sales_data != 1] = -1
+x = sales_data.iloc[:, :3].as_matrix().astype(int)
+y = sales_data.iloc[:, 3].as_matrix().astype(int)
 
+dtc = DTC(criterion='entropy')
+dtc.fit(x, y)
+
+# 通过函数export_graphviz可视化决策树的结果
+#with open('tree.dot', 'w') as f:
+#   f = export_graphviz(dtc, feature_names=sales_data.columns[:3], out_file=f)
