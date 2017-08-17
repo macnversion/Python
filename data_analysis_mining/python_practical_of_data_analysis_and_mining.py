@@ -14,11 +14,15 @@ from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression as LR
 from sklearn.linear_model import RandomizedLogisticRegression as RLR
 from sklearn.tree import DecisionTreeClassifier as DTC
+from sklearn.cluster import KMeans
 from sklearn.tree import export_graphviz
 from sklearn.externals.six import StringIO
+from keras.models import Sequential
+# from keras.layer.core import Dense, Activation
 from sklearn import datasets
 
 # %% 设定数据路径
+os.getcwd()
 if 'Windows' in platform.platform():
     data_path = r'D:/WorkSpace/CodeSpace/Code.Data/Python/'
 else:
@@ -138,6 +142,7 @@ low_d = pca.transform(principal_component)
 
 # %% 挖掘建模
 file_path = data_path + r'Python数据分析与挖掘实战/chapter5/demo/data/'
+os.chdir(file_path)
 
 # 逻辑回归
 bankloan = pd.read_excel(file_path + 'bankloan.xls')
@@ -171,3 +176,39 @@ dtc.fit(x, y)
 # 通过函数export_graphviz可视化决策树的结果
 #with open('tree.dot', 'w') as f:
 #   f = export_graphviz(dtc, feature_names=sales_data.columns[:3], out_file=f)
+
+# %% 聚类分析
+consumption_data = pd.read_excel('consumption_data.xls', index_col='Id')
+k = 3
+iteration = 500
+data_zs = 1.0*(consumption_data - consumption_data.mean())/\
+          consumption_data.std()
+model = KMeans(n_clusters=k, n_jobs=4, max_iter=iteration)
+model.fit(data_zs)
+
+r1 = pd.Series(model.labels_).value_counts()
+r2 = pd.DataFrame(model.cluster_centers_)
+r = pd.concat([r2, r1], axis=1)
+r.columns = list(consumption_data.columns) + [u'类别数目']
+r = pd.concat([consumption_data,
+               pd.Series(model.labels_, index=consumption_data.index)],
+              axis=1)
+r.columns = list(consumption_data.columns) + [u'聚类类别']
+
+
+def density_plot(data, title):
+    plt.rcParams['font.sans-serif'] = 'SimHei'
+    plt.rcParams['axes.unicode_minus'] = False
+    plt.figure()
+    for i in range(len(data.iloc[0])):
+        (data.iloc[:, i]).plot(kind='kde',
+                              label=data.columns[i],
+                              linewidth=2)
+    plt.xlabel(u'人数')
+    plt.ylabel(u'密度')
+    plt.title(u'聚类类别%s各属性的密度曲线' % title)
+    plt.legend
+    return  plt
+
+for i in range(k):
+    density_plot(consumption_data[r[u'聚类类别']==i], i)
