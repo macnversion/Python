@@ -208,7 +208,17 @@ def density_plot(data, title):
     plt.ylabel(u'密度')
     plt.title(u'聚类类别%s各属性的密度曲线' % title)
     plt.legend
-    return  plt
+    return plt
+
+
+def density_plot(data):
+    plt.rcParams['font.sans-serif'] = ['SimHei']
+    plt.rcParams['axes.unicode_minus'] = False
+    p = data.plot(kind='kde', linewidth=2, subplots=True, sharex = False)
+    [p[i].set_ylabel(u'密度') for i in range(k)]
+    plt.legend()
+    return plt
+
 
 for i in range(k):
-    density_plot(consumption_data[r[u'聚类类别']==i], i)
+    density_plot(consumption_data[r[u'聚类类别']==i])
