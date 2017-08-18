@@ -17,6 +17,7 @@ from sklearn.tree import DecisionTreeClassifier as DTC
 from sklearn.cluster import KMeans
 from sklearn.tree import export_graphviz
 from sklearn.externals.six import StringIO
+from apriori import *
 from keras.models import Sequential
 # from keras.layer.core import Dense, Activation
 from sklearn import datasets
@@ -196,21 +197,6 @@ r = pd.concat([consumption_data,
 r.columns = list(consumption_data.columns) + [u'聚类类别']
 
 
-def density_plot(data, title):
-    plt.rcParams['font.sans-serif'] = 'SimHei'
-    plt.rcParams['axes.unicode_minus'] = False
-    plt.figure()
-    for i in range(len(data.iloc[0])):
-        (data.iloc[:, i]).plot(kind='kde',
-                              label=data.columns[i],
-                              linewidth=2)
-    plt.xlabel(u'人数')
-    plt.ylabel(u'密度')
-    plt.title(u'聚类类别%s各属性的密度曲线' % title)
-    plt.legend
-    return plt
-
-
 def density_plot(data):
     plt.rcParams['font.sans-serif'] = ['SimHei']
     plt.rcParams['axes.unicode_minus'] = False
@@ -222,3 +208,9 @@ def density_plot(data):
 
 for i in range(k):
     density_plot(consumption_data[r[u'聚类类别']==i])
+
+# %% 关联分析
+menu_orders = pd.read_excel('menu_orders.xls', header=None)
+print(u'\n转换原始矩阵到0-1矩阵')
+
+ct = lambda x: pd.Series(1, index=x[pd.notnull(x)])
