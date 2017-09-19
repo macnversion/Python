@@ -5,10 +5,14 @@ import urllib2
 import re
 import itertools
 import builtwith
-#import python-whois
+import whois
 
 # %%
 url = r'http://example.webscraping.com/'
+
+# %% 查看网站所所使用的技术和所有者
+builtwith.parse(url)
+whois.whois(url)
 
 
 def download(url, user_agent='wswp', num_retries=2):
