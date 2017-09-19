@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+# 用python写网络爬虫
 # %%
 import urllib2
 import re
 import itertools
+import builtwith
+#import python-whois
 
 # %%
 url = r'http://example.webscraping.com/'
