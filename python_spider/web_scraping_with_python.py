@@ -64,7 +64,7 @@ def link_crawler(seed_url, link_regex):
     while crawl_queue:
         url = crawl_queue.pop()
         html = download(url)
-
+        user_agent = 'BadCrawler'
         rp = robotparser.RobotFileParser()
         rp.set_url(url + '/robot.txt')
         if rp.can_fetch(user_agent, url):
@@ -97,7 +97,7 @@ class Throttle:
         domian = urlparse.urlparse(url).netloc
         last_accessed = self.domains.get(domain)
 
-        if self.delay > 0 and last_accessed is nit None:
+        if self.delay > 0 and last_accessed is not None:
             sleep_secs = self.delay - (datetime.datetime.now() - last_accessed).seconds
             if sleep_secs > 0:
                 # domain has been accessed recently
