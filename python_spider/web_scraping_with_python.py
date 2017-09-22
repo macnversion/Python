@@ -11,6 +11,7 @@ import robotparser
 import datetime
 import time
 from bs4 import BeautifulSoup
+import lxml.html
 
 # %% 爬虫
 url = r'http://example.webscraping.com/'
@@ -134,3 +135,13 @@ td = tr.find(attrs={'class':'w2p_fw'})
 area = td.text
 
 # Lxml
+broken_html = '<ul class=country><li>Area<li>Population</ul>'
+tree = lxml.html.fromstring(broken_html)
+fixed_html = lxml.html.tostring(tree, pretty_print=True)
+print '\n', fixed_html
+
+# CSS选择器示例
+tree = lxml.html.fromstring(html)
+td = tree.cssselect('tr#places_area__row > td.w2p_fw')[0]
+area = td.text_content()
+print '\n', area
