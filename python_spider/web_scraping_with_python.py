@@ -9,6 +9,8 @@ import whois
 import urlparse
 import robotparser
 import datetime
+import time
+from bs4 import BeautifulSoup
 
 # %% 爬虫
 url = r'http://example.webscraping.com/'
@@ -57,6 +59,9 @@ for page in itertools.count(1):
         pass
 
 
+user_agent = 'BadCrawler'
+
+
 def link_crawler(seed_url, link_regex):
     crawl_queue = [seed_url]
     # keep track which url has been seen before
@@ -64,7 +69,6 @@ def link_crawler(seed_url, link_regex):
     while crawl_queue:
         url = crawl_queue.pop()
         html = download(url)
-        user_agent = 'BadCrawler'
         rp = robotparser.RobotFileParser()
         rp.set_url(url + '/robot.txt')
         if rp.can_fetch(user_agent, url):
@@ -84,6 +88,7 @@ def get_links(html):
     webpage_regex = re.compile('<a[^>]+href=["\'](.*?)["\']', re.IGNORECASE)
     return webpage_regex.findall(html)
 
+
 class Throttle:
     '''Add a delay between downloads to the same domain'''
 
@@ -94,7 +99,7 @@ class Throttle:
         self.domains = {}
 
     def wait(self, url):
-        domian = urlparse.urlparse(url).netloc
+        domain = urlparse.urlparse(url).netloc
         last_accessed = self.domains.get(domain)
 
         if self.delay > 0 and last_accessed is not None:
@@ -104,10 +109,28 @@ class Throttle:
                 # so need to sleep
                 time.sleep(sleep_secs)
 
-        self.domains[domian] = datetime.datetime.now()
+        self.domains[domain] = datetime.datetime.now()
 
 
 # %% 数据抓取
- url = r'http://example.webscraping.com/places/default/view/239'
- html = download(url)
- result = re.findall('<td class="w2p_fw">(.*?)</td>', html)
+url = r'http://example.webscraping.com/places/default/view/239'
+html = download(url)
+result = re.findall('<td class="w2p_fw">(.*?)</td>', html)
+result2 = re.findall('<tr id="places_area__row"><td class="w2p_fl"><label for="places_area" id="places_area__label">' +\
+    'Area: </label></td><td class="w2p_fw">.*</td>', html)
+
+# beautifulsoup使用的case
+broken_html = '<ul class=country><li>Area<li>Population</ul>'
+soup = BeautifulSoup(broken_html, 'html.parser')
+fixed_html = soup.prettify()
+ul = soup.find('ul', attrs={'class':'country'})
+ul.find('li')
+ul.find_all('li')
+
+# 使用beautifulsoup抽取国家面积
+soup = BeautifulSoup(html, 'html.parser')
+tr = soup.find(attrs={'id':'places_area__row'})
+td = tr.find(attrs={'class':'w2p_fw'})
+area = td.text
+
+# Lxml
