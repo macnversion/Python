@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#  python数据分析与挖掘实战
+#  python数据分析与挖掘实战，机械工业出版社
 
 # %%
 import os
