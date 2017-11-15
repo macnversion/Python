@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
+<<<<<<< HEAD
 #  python数据分析与挖掘实战，机械工业出版社
 
+=======
+# python数据分析与挖掘实战
+# 张良均、王路、谭立云、苏剑林等著，机械工业出版社出版
+>>>>>>> 058bb079cafa16b2939e68029d0389dcd01125ce
 # %%
 import os
 import platform
@@ -30,7 +35,9 @@ else:
     data_path = r'/Users/machuan/CodeSpace/Code.Data/python/'
 
 # %% 数据探索- chapter03
-file_path = data_path + r'Python数据分析与挖掘实战/chapter3/demo/data/'
+# file_path = data_path + r'Python数据分析与挖掘实战/chapter3/demo/data/'
+file_path = os.path.join(data_path, r'Python数据分析与挖掘实战/chapter3/demo/data/')
+# os.chdir(file_path)  #  try to fix it
 # 异常分析和离散度分析
 catering_sale = file_path + 'catering_sale.xls'
 data = pd.read_excel(catering_sale, index_col=u'日期')
