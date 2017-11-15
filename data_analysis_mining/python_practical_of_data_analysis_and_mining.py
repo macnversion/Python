@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
-<<<<<<< HEAD
 #  python数据分析与挖掘实战，机械工业出版社
-
-=======
-# python数据分析与挖掘实战
 # 张良均、王路、谭立云、苏剑林等著，机械工业出版社出版
->>>>>>> 058bb079cafa16b2939e68029d0389dcd01125ce
 # %%
 import os
 import platform
