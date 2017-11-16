@@ -14,12 +14,11 @@ from bs4 import BeautifulSoup
 import lxml.html
 
 # %% 爬虫
-url = r'http://example.webscraping.com/'
+url = r'http://example.webscraping.com'
 
 # 查看网站所所使用的技术和所有者
 builtwith.parse(url)
-whois.whois(url)
-
+whois.query(url).__dict__
 
 def download(url, user_agent='wswp', proxy = None, num_retries=2):
     print 'Downloading url:', url
