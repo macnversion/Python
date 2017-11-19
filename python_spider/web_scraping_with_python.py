@@ -20,6 +20,49 @@ url = r'http://example.webscraping.com'
 builtwith.parse(url)
 whois.query(url).__dict__
 
+# 各种不同完整程度的爬虫程序
+def download1(url):  # 直接下载网页1
+    return urllib2.urlopen(url).read()
+
+
+def download2(url):  # 处理下载网页失败的情形
+    print 'Downloading', url
+    try:
+        html = urllib2.urlopen(url).read()
+    except urllib2.URLError as e:
+        print 'Download error:', e.reason
+        html = None
+    return html
+
+
+def download3(url, num_retries=5):  # 可以重新下载
+    print 'Downloading', url
+    try:
+        html = urllib2.urlopen(url).read()
+    except urllib2.URLError as e:
+        print 'Download error:', e.reason
+        html = None
+        if num_retries > 0:
+            if hasattr(e, 'code') and 500 <= e.code < 600:
+                return download3(url, num_retries-1)
+    return  html
+
+
+def download4(url, user_agent='wswp', num_retries=5):
+    print 'Downloading', url
+    headers = {'User_agent': user_agent}
+    request = urllib2.Request(url, headers=headers)
+    try:
+        html = urllib2.urlopen(request).read()
+    except urllib2.URLError as e:
+        print 'Download error:', e.reason
+        html = None
+        if num_retries > 0:
+            if hasattr(e, 'code') and 500 <= e.code < 600:
+                return download4(url ,user_agent, num_retries-1)
+    return html
+
+
 def download(url, user_agent='wswp', proxy = None, num_retries=2):
     print 'Downloading url:', url
     headers = {'User-agent': user_agent}
