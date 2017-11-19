@@ -48,7 +48,7 @@ def download3(url, num_retries=5):  # 可以重新下载
     return  html
 
 
-def download4(url, user_agent='wswp', num_retries=5):
+def download4(url, user_agent='wswp', num_retries=5):  # 增加user_agent
     print 'Downloading', url
     headers = {'User_agent': user_agent}
     request = urllib2.Request(url, headers=headers)
@@ -63,7 +63,7 @@ def download4(url, user_agent='wswp', num_retries=5):
     return html
 
 
-def download(url, user_agent='wswp', proxy = None, num_retries=2):
+def download5(url, user_agent='wswp', proxy=None, num_retries=2):
     print 'Downloading url:', url
     headers = {'User-agent': user_agent}
     request = urllib2.Request(url, headers=headers)
@@ -84,7 +84,7 @@ def download(url, user_agent='wswp', proxy = None, num_retries=2):
     return html
 
 def crawl_sitemap(url):
-    # download the sitemap
+    # download the sitemap file
     sitemap = download(url)
     # extract the sitemap links
     links = re.findall('<loc>(.*)</loc>', sitemap)
