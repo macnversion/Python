@@ -7,11 +7,11 @@ import whois
 import urlparse
 
 # %% 爬虫
-url = r'http://example.webscraping.com'
+# url = r'http://example.webscraping.com'
 
 # 查看网站所所使用的技术和所有者
-builtwith.parse(url)
-whois.whois(url).__dict__
+# builtwith.parse(url)
+# whois.whois(url).__dict__
 
 # 各种不同完整程度的爬虫程序
 def download1(url):  # 直接下载网页1
@@ -77,7 +77,7 @@ def download5(url, user_agent='wswp', proxy=None, num_retries=2):
     return html
 
 
-download = download4()
+download = download4
 
 if __name__ == '__main__':
-    print download(url)
+    print download('http://example.webscraping.com')
