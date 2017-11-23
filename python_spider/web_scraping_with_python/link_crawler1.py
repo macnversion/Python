@@ -1,7 +1,24 @@
 # -*- coding: utf-8 -*-
 
 import re
-from commmon import download
+from common import download
 
 
 def link_crawler(seed_url, link_regex):
+    crawl_queue = [seed_url]
+    while crawl_queue:
+        url = crawl_queue.pop()
+        html = download(url)
+
+        for link in get_links(html):
+            crawl_queue.append(link)
+
+
+def get_links(html):
+    '''retuen a list of links from html'''
+    # a regular expression to extract all links from the webpage
+    webpage_regex = re.compile('<a[^>]+href=["\'](.*?)["\']', re.IGNORECASE)
+    return webpage_regex.findall(html)
+
+if __name__ == '__main__':
+    link_crawler('http://example.webscraping.com', '/(index|view)')
