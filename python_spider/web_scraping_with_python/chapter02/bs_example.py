@@ -1,4 +1,5 @@
 #  -*- coding: utf-8 -*-
+# example of beautifulsoup
 
 import urllib2
 from bs4 import BeautifulSoup
