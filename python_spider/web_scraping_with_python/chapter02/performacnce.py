@@ -41,4 +41,3 @@ def main():
     times = {}
     html = urllib2.urlopen('http://example.webscraping.com/places/default/view/Aland-Islands-2').read()
     NUM_ITERATIONS = 1000 # 每个爬虫测试1000次
-    for name, scraper in ()
