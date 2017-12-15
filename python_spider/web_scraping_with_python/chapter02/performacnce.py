@@ -20,7 +20,7 @@ def regex_scraper(html):
         return results
 
 
-def beautifuk_soup_scraper(html):
+def beautiful_soup_scraper(html):
     soup = BeautifulSoup(html, 'html.parser')
     results = {}
     for field in fields:
@@ -41,3 +41,28 @@ def main():
     times = {}
     html = urllib2.urlopen('http://example.webscraping.com/places/default/view/Aland-Islands-2').read()
     NUM_ITERATIONS = 1000 # 每个爬虫测试1000次
+    for name, scraper in ('Regular expressions', regex_scraper), ('Beautiful Soup', beautiful_soup_scraper), ('Lxml',
+                                                                                                              lxml_scraper):
+        times[name] = []
+        # record the start time of scraper
+        start = time.time()
+        for i in range(NUM_ITERATIONS):
+            if scraper == regex_scraper:
+                re.pruge()
+            result = scraper(html)
+
+            assert(result['area'] == '1,580 square kilometres')
+            times[name].append(time.time() - start)
+    end = time.time()
+    print '{}: {:.2f} seconds'.format(name, end - start)
+
+
+writer = csv.writer(open('times.csv', 'w'))
+header = sorted(times.keys())
+writer.writerow(header)
+for row in zip(*[times[scraper] for scraper in header]):
+    write.writerow(row)
+
+
+if __name__ == '__main__':
+    main()
