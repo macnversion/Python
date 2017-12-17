@@ -17,7 +17,7 @@ def regex_scraper(html):
     for field in fields:
         results[field] = re.search('<tr id="places_{}__row">.*?<td class="w2p_fw">(.*?)</td>'.format(field),
                                    html).groups()[0]
-        return results
+    return results
 
 
 def beautiful_soup_scraper(html):
@@ -26,7 +26,7 @@ def beautiful_soup_scraper(html):
     for field in fields:
         results[field] = soup.find('table').find('tr', id='places_{}__row'.format(field)).find('td',
                                                                                               class_='w2p_fw').text
-        return results
+    return results
 
 
 def lxml_scraper(html):
@@ -55,13 +55,11 @@ def main():
             times[name].append(time.time() - start)
     end = time.time()
     print '{}: {:.2f} seconds'.format(name, end - start)
-
-
-writer = csv.writer(open('times.csv', 'w'))
-header = sorted(times.keys())
-writer.writerow(header)
-for row in zip(*[times[scraper] for scraper in header]):
-    write.writerow(row)
+    writer = csv.writer(open('times.csv', 'w'))
+    header = sorted(times.keys())
+    writer.writerow(header)
+    for row in zip(*[times[scraper] for scraper in header]):
+        writer.writerow(row)
 
 
 if __name__ == '__main__':
